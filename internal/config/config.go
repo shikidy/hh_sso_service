@@ -12,7 +12,7 @@ type Config struct {
 	HTTP        HTTPConfig `yaml:"http" env-required:"true"`
 }
 type HTTPConfig struct {
-	Port int `yaml:"port" env-required:"true"`
+	Port string `yaml:"port" env-required:"true"`
 }
 
 func LoadConfg(configPath string) (*Config, error) {
