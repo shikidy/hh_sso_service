@@ -10,10 +10,11 @@ type UserRepository struct {
 	users map[int]*models.User
 }
 
-func (r *UserRepository) Create(user *models.User) {
+func (r *UserRepository) Create(user *models.User) error {
 	newId := len(r.users) + 1
 	user.ID = newId
 	r.users[newId] = user
+	return nil
 }
 
 func (r *UserRepository) Find(id int) (*models.User, error) {
