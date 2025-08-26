@@ -6,9 +6,7 @@ import (
 
 func TestUser(*testing.T) *User {
 	return &User{
-		Username:     "someusername",
-		Email:        "email",
-		PasswordHash: "passwordhash",
-		IsAdmin:      false,
+		Username: "someusername",
+		Email:    "email",
 	}
 }

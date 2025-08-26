@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"flag"
 	"log/slog"
 	"os"
@@ -9,7 +10,7 @@ import (
 
 	"github.com/shikidy/hh_sso_service/internal/app"
 	"github.com/shikidy/hh_sso_service/internal/config"
-	"github.com/shikidy/hh_sso_service/internal/store/teststore"
+	"github.com/shikidy/hh_sso_service/internal/store/sqlstore"
 )
 
 const (
@@ -32,7 +33,11 @@ func main() {
 	cfg := config.MustLoadConfig(configPath)
 	logger := setupLogger(cfg.Env)
 
-	store := teststore.New()
+	db, err := newDB(cfg.StoragePath)
+	if err != nil {
+		panic("Error on loading database: " + err.Error())
+	}
+	store := sqlstore.New(db)
 	application := app.New(store, logger, cfg)
 
 	go application.Webapp.Run()
@@ -63,4 +68,15 @@ func setupLogger(env string) *slog.Logger {
 		)
 	}
 	return log
+}
+
+func newDB(connection string) (*sql.DB, error) {
+	db, err := sql.Open("postgres", connection)
+	if err != nil {
+		return nil, err
+	}
+	if err := db.Ping(); err != nil {
+		return nil, err
+	}
+	return db, nil
 }
